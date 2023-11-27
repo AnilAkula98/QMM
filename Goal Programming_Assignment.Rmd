@@ -1,0 +1,112 @@
+---
+title: "Goal Programming"
+author: "Anil Kumar Akula"
+date: "2023-11-26"
+output:
+  word_document: default
+  pdf_document:
+    latex_engine: xelatex
+  html_document:
+    df_print: paged
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+***
+#Summary:
+
+1. To optimize the goal function, the company must combine X1, X2, and X3 in order to use the units of combination. Using the codes X1 for Product 1, X2 for Product 2, and X3 for Product 3, 20 units of Product 1 and 15 units of Product 2 cannot be manufactured because the resultant solution was "0." In order to increase profit, the company can only manufacture 15 units of Product 3, which is the only product. However, X3 changed. 
+
+2. Employee levels would be stabilized with a maximum of 50 hundred employees, however, in this case, the firm had 25 hundred additional employees (y1p). They would have to pay a penalty for the overage. 
+
+3. As a result of y2p and y2m, the next year's earnings are assessed against the current level, a level that in this case is interpreted as “0,” indicating that the earnings in the next year do not increase or decrease from those in the current year. Therefore, earnings for the following year remain unchanged. 
+
+4. The objective function of the corporation's objective function is 225 million dollars, which represents the profit it aims to achieve.
+
+***
+
+#Loading Required Package
+```{r}
+library(lpSolve)
+library(lpSolveAPI)
+```
+
+***
+**Problem Statement: **
+Three new goods from the Emax Corporation need to be chosen as the combination to be released. The
+company’s total profit, worker stability, and seeking an increase in overall earnings from the $75 million
+realized this year are given top priority. We are required to resolve the following linear programming model
+in particular: Maximize Z = P − 6C − 3D, where
+P = total (discounted) profit over the life of the new products,
+C = change (in either direction) in the current level of employment, and
+D = decrease in next year’s earnings from the current year’s
+
+
+1.Defining y1p and y1m as the amount over (if any) and the amount under (if any) the employment level goal.
+Defining y2p and y2m in the same way for the goal regarding earnings next year.
+Define x1, x2 and x3 as the production rates of Products 1, 2, and 3, respectively.
+Also expressing P in terms of x1, x2 and x3 and the objective function in terms of x1, x2, x3, y1p, y1m ,
+y2p and y2m
+
+***
+
+```{r}
+# The file "kumar.lp" contains a representation of the model mentioned above.
+g <- read.lp("C:/Users/anila/OneDrive/Documents/Kumar.lp")
+g      
+
+```
+```{r}
+## Solving the model
+solve(g)
+
+```
+
+#2.To get the objective function’s maximum value and the values of the decision variables, we utilize the get.objective’ and ‘get.variables’ functions. The decision variables xj are represented by the first three variables in the “Kumar.lp” model.
+
+```{r}
+## Solving the model
+solve(g)
+
+```
+
+```{r}
+get.objective(g)
+```
+
+
+```{r}
+get.variables(g)
+```
+
+
+```{r}
+get.constraints(g)
+```
+#The following table illustrates the effects of each of the new goods (per unit rate of production) on each of these factors:
+
+```{r}
+# Create the matrix
+g_tab <- matrix(c("Total Profit", "Employment Level", "Earnings Next Year",
+                   20, 6, 8,
+                   15, 4, 7,
+                   25, 5, 5,
+                   "Maximize", "=50", ">=75",
+                   "Millions of Dollars", "Hundreds of Employees", "Millions of Dollars"), 
+                 ncol = 6, byrow = FALSE)
+
+# Set column names
+colnames(g_tab) <- c("Factor", "Product 1", "Product 2", "Product 3", "Goal", "Units")
+as.table(g_tab)
+
+
+
+  
+```
+
+#
+```{r}
+get.sensitivity.rhs(g)
+get.sensitivity.objex(g)
+```
